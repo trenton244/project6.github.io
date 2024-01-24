@@ -54,14 +54,15 @@ const app = Vue.createApp({
         try {
             const response = await fetch('tickets1.json');
             this.tickets = await response.json();
-            this.over25Tickets = this.tickets.filter(ticket => ticket.speed >= ticket.limit + 25);
+            this.over25Tickets = this.tickets.filter(ticket => ticket.actual_speed >= ticket.posted_speed + 25);
         } catch (error) {
             console.error("Error loading tickets data:", error);
         }
     }
 });
 
-app.mount('#app');
+app.mount('#app'); // This line was missing
 </script>
+
 </body>
 </html>
