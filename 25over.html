@@ -44,26 +44,29 @@
 </div>
 
 <script>
-const app = Vue.createApp({
-    data() {
-        return {
-            tickets: [],
-            over25Tickets: []
-        };
-    },
-    async created() {
-        try {
-            const response = await fetch('tickets1.json');
-            this.tickets = await response.json();
-            this.over25Tickets = this.tickets.filter(ticket => ticket.actual_speed >= ticket.posted_speed + 25);
-        } catch (error) {
-            console.error("Error loading tickets data:", error);
+document.addEventListener('DOMContentLoaded', function() {
+    const app = Vue.createApp({
+        data() {
+            return {
+                tickets: [],
+                over25Tickets: []
+            };
+        },
+        async created() {
+            try {
+                const response = await fetch('tickets1.json');
+                this.tickets = await response.json();
+                this.over25Tickets = this.tickets.filter(ticket => ticket.actual_speed >= ticket.posted_speed + 25);
+            } catch (error) {
+                console.error("Error loading tickets data:", error);
+            }
         }
-    }
-});
+    });
 
-app.mount('#app'); // This line was missing
+    app.mount('#app');
+});
 </script>
+
 
 </body>
 </html>
