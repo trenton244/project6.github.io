@@ -3,71 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>25mph or more over</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js" defer></script>
+    <title>Traffic Tickets - 25 MPH Over</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
 </head>
 <body>
-    <div id="app">
+    <div id="app" class="container mt-3">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">Tickets</a>
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <a class="navbar-brand" href="#">Traffic Tickets</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="index.html">All Tickets</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="25over.html">25mph or more over</a>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="25over.html">25 MPH Over <span class="sr-only">(current)</span></a>
                     </li>
                 </ul>
             </div>
         </nav>
-        <div class="container mt-5">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Speed</th>
-                        <th>Limit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="ticket in over25Tickets">
-                        <td>{{ ticket.id }}</td>
-                        <td>{{ ticket.speed }}</td>
-                        <td>{{ ticket.limit }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <h1>Tickets for 25+ MPH Over Limit</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Speed</th>
+                    <th scope="col">Limit</th>
+                    <th scope="col">Over</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Violator</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(ticket, index) in filteredTickets" :key="ticket.tid">
+                    <th scope="row">{{ index + 1 }}</th>
+                    <td>{{ ticket.actual_speed }}</td>
+                    <td>{{ ticket.posted_speed }}</td>
+                    <td>{{ ticket.actual_speed - ticket.posted_speed }}</td>
+                    <td>{{ ticket.stop_date }}</td>
+                    <td>{{ ticket.stop_time }}</td>
+                    <td>{{ ticket.violator_sex }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
+    <!-- Vue.js app -->
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
         var app = new Vue({
             el: '#app',
             data: {
                 tickets: [],
-                over25Tickets: []
+                filteredTickets: []
             },
             methods: {
-                loadTickets: function() {
-                    fetch('tickets1.json')
-                        .then(response => response.json())
-                        .then(data => {
-                            this.tickets = data;
-                            this.over25Tickets = this.tickets.filter(ticket => ticket.actual_speed >= ticket.posted_speed + 25);
-                        })
-                        .catch(error => {
-                            console.error("Error loading tickets data:", error);
-                        });
+                filterTickets() {
+                    this.filteredTickets = this.tickets.filter(ticket => ticket.actual_speed - ticket.posted_speed > 25);
                 }
             },
-            created: function() {
-                this.loadTickets();
+            mounted() {
+                fetch('tickets1.json')
+                .then(response => response.json())
+                .then(data => {
+                    this.tickets = data;
+                    this.filterTickets();
+                });
             }
         });
-    });
     </script>
 </body>
 </html>
