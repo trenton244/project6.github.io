@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>25mph or more over</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@vue/runtime-dom@3.2.26/dist/runtime-dom.global.js"></script>
+</head>
+<body>
+    <div id="app">
+        <nav class="navbar navbar-expand-lg navbarlight bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Tickets</a>
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+                <a class="nav-link" href="index.html">All Tickets</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="25over.html">25mph or more over</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container mt-5">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Speed</th>
+                <th>Limit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="ticket in over25Tickets">
+                <td>{{ ticket.id }}</td>
+                <td>{{ ticket.speed }}</td>
+                <td>{{ ticket.limit }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</div>
+
+<script>
+const app = Vue.createApp({
+    data() {
+        return {
+            tickets: [],
+            over25Tickets: []
+        };
+    },
+    async created() {
+        try {
+            const response = await fetch('tickets1.json');
+            this.tickets = await response.json();
+            this.over25Tickets = this.tickets.filter(ticket => ticket.speed >= ticket.limit + 25);
+        } catch (error) {
+            console.error("Error loading tickets data:", error);
+        }
+    }
+});
+
+app.mount('#app');
+</script>
+</body>
+</html>
